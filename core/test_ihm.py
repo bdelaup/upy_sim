@@ -1,15 +1,27 @@
 import unittest
-from ihm import Ihm, IhmEltBasic
-from upysim_io import Io
+from ihm import IhmBasic, IhmEltPin
+from observer_pattern import Subject, Notification
 
-class TestSubject(Io):
-    def __init__(self):
-        Io.__init__(self)
-        self._state = 0
+
+class SubjectTest(Subject):
+    def __init__(self):        
+        self.state = 0
+        self.observers = []
+
+    def register_observer(self, obs):
+        self.observers.append(obs)
+
+    def notify_observer(self):
+        for ob in self.observers:
+            ob.update(Notification("none", self.state))
 
     def action(self):
-        self._state = self._state+1
+        self.state = self.state+1
         self.notify_observer()
+
+    def remove_observer(self, ob):
+        pass
+    
 
 
 class TestIhm(unittest.TestCase):
@@ -20,8 +32,8 @@ class TestIhm(unittest.TestCase):
         pass
 
     def testBasic(self):
-        subj = TestSubject()
-        ihm_elt = IhmEltBasic()
+        subj = SubjectTest()
+        ihm_elt = IhmEltPin()
         subj.register_observer(ihm_elt)
 
         ihm_elt.refresh()
@@ -31,15 +43,15 @@ class TestIhm(unittest.TestCase):
         
 
     def testIhm(self):
-        subj1 = TestSubject()
-        subj2 = TestSubject()
-        subj3 = TestSubject()
+        subj1 = SubjectTest()
+        subj2 = SubjectTest()
+        subj3 = SubjectTest()
 
-        ihm_elt1 = IhmEltBasic()
-        ihm_elt2 = IhmEltBasic()
-        ihm_elt3 = IhmEltBasic()
-        ihm_elt4 = IhmEltBasic()
-        ihm_elt5 = IhmEltBasic()
+        ihm_elt1 = IhmEltPin()
+        ihm_elt2 = IhmEltPin()
+        ihm_elt3 = IhmEltPin()
+        ihm_elt4 = IhmEltPin()
+        ihm_elt5 = IhmEltPin()
         
         subj1.register_observer(ihm_elt1)
         subj1.register_observer(ihm_elt2)
@@ -47,15 +59,15 @@ class TestIhm(unittest.TestCase):
         subj2.register_observer(ihm_elt4)
         subj3.register_observer(ihm_elt5)
 
-        ihm = Ihm()
+        ihm = IhmBasic()
 
-        ihm.add('1', ihm_elt1)
-        ihm.add('2', ihm_elt1)
-        ihm.add('3', ihm_elt1)
-        ihm.add('4', ihm_elt1)
-        ihm.add('5', ihm_elt1)
+        ihm.add_element('1', ihm_elt1)
+        ihm.add_element('2', ihm_elt1)
+        ihm.add_element('3', ihm_elt1)
+        ihm.add_element('4', ihm_elt1)
+        ihm.add_element('5', ihm_elt1)
 
-        assert (ihm.refresh() == 0)
+        self.assertEqual(ihm.refresh_elements(), 0)
 
         for i in range(5):
             subj1.action()
@@ -63,8 +75,8 @@ class TestIhm(unittest.TestCase):
             subj3.action()
             i=i
 
-        assert (ihm.refresh() == 25)
-        assert (ihm_elt1.refresh() == 5)
+        self.assertEqual (ihm.refresh_elements() , 25)
+        self.assertEqual (ihm_elt1.refresh() , 5)
 
 
 if __name__ == "__main__":

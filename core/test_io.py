@@ -1,12 +1,12 @@
 import unittest
-from upysim_io import Io
+from context import IoTemplate
 from observer_pattern import Observer
 
 
 
-class Pin(Io) :
+class Pin(IoTemplate) :
     def __init__(self):
-        Io.__init__(self)
+        IoTemplate.__init__(self)
 
     def set_state(self, state):
         self.state = state

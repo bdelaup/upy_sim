@@ -1,15 +1,23 @@
-from abc import abstractmethod
+from abc import abstractmethod, ABC
 from observer_pattern import Observer, Notification
-from upysim_io import Io
 
-class Ihm:
+class Ihm(ABC):
+    @abstractmethod
+    def add_element(self, name, element):
+        pass
+    
+    @abstractmethod
+    def refresh_elements(self):
+        pass
+
+class IhmBasic(Ihm):
     def __init__(self):
         self.elements = {}
     
-    def add(self, name, element):
+    def add_element(self, name, element):
         self.elements[name] = element
 
-    def refresh(self):
+    def refresh_elements(self):
         count = 0
         for elt in self.elements:
             count += self.elements[elt].refresh()
@@ -36,4 +44,5 @@ class IhmEltPin(IhmElement):
 
     def refresh(self):
         print ("pin", self.subject_id , " => ", self.subject_state)
+        return self.subject_state
         

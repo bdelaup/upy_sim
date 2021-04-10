@@ -41,8 +41,7 @@ from abc import abstractmethod
 from typing import overload, Union, Tuple, Optional, NoReturn, List, Callable
 from typing import Sequence, ClassVar, Any
 
-from upysim_io import Io
-from context import Context, IoRegister
+from context import Context, IoRegister, notify
 
 # class ADC:
 #    """
@@ -73,7 +72,7 @@ from context import Context, IoRegister
 #       such that the minimum value is 0 and the maximum value is 65535.
 #       """
 @IoRegister
-class Pin(Io) :
+class Pin() :
    """
    A pin is the basic object to control I/O pins.  It has methods to set
    the mode of the pin (input, output, etc) and methods to get and set the
@@ -95,14 +94,14 @@ class Pin(Io) :
       Create a new Pin object associated with the id.  If additional arguments are given,
       they are used to initialise the pin.  See :meth:`pin.init`.
       """
-      Io.__init__(self)
       self.init(id, mode, pull, af)      
       
+   @notify
    def high(self):
       """
       Sets the pin to high.
       """
-      self.on()
+      self.state = 1
 
    # def init(self, id: Union[int, str], /, mode: int = IN, pull: int = PULL_UP, af: Union[str, int] = -1):
    def init(self, id: Union[int, str], mode: int = IN, pull: int = PULL_UP, af: Union[str, int] = -1):
@@ -122,34 +121,36 @@ class Pin(Io) :
          - ``lambdaFunction`` the code to execute when the interrupt happens.
          - ``direction`` either ``IRQ_RISING`` or ``IRQ_FALLING``
       """
-
+   @notify
    def low(self):
       """
       Sets the pin to low.
       """
-      self.off()
+      self.state = 0
 
+   @notify
    def off(self):
       """
       Sets the pin to be off.
       """
       self.state = 0
-      self.notify_observer()
+      # self.notify_observer()
 
+   @notify
    def on(self):
       """
       Sets the pin to be on.
       """
       self.state = 1
-      self.notify_observer()
-
+      
+   @notify
    def toggle(self):
       """
       Sets the pin to high if it's currently low, and vice versa.
       """
       self.state = 1 if self.state == 0 else 0
-      self.notify_observer()
-
+      
+   @notify
    def value(self, *args, **kwargs) -> int:
       """
       Get or set the digital logic level of the pin:
@@ -160,8 +161,7 @@ class Pin(Io) :
          is set high, otherwise it is set low.
       """
       if len(args) == 1:
-         self.state = 0 if args[0]==0 else 1
-         self.notify_observer()
+         self.state = 0 if args[0]==0 else 1         
       else :
          return self.state
       

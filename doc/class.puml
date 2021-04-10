@@ -3,84 +3,79 @@
 
 hide attributes
 
-class "Microcontroler" as uc
 
-Abstract Io {
-    publish
+
+class Pin {
+    +init(id, mode, pull, af)
+    +high()
+    +low()
+    +on()
+    +off()
+    +toggle()
+    +value()
+    +value(val)
 }
 
-class Pin
-class PinIn
-class PinOut
-class Ihm
+interface Ihm {
+    {abstract} add_element(name, element)
+    {abstract} refresh_elements()
+}
 
-Abstract IoFactory {
-    create() -> Io
+class IhmBasic {
+    +add_element(name, element)
+    +refresh_elements()
+}
+
+abstract IhmElement {
+    {abstract} refresh()
+}
+
+class IhmEltPin {
+    +refresh()
+    +update(notification)
 }
 
 
-class PinInFactory {
-    create() -> PinIn
+Interface Subject {
+    {abstract} register_observer(observer)
+    {abstract} remove_observer(observer)
+    {abstract} notify_observer()
+}
+class Notification
+Interface Observer {    
+    {abstract} update(notification)
 }
 
-class PinOutFactory {
-    create() -> PinOut
+Ihm <|.. IhmBasic
+class Io {
+    +register_observer(observer)
+    +remove_observer(observer)
+    +notify_observer()
 }
 
-
-
-class IhmSubject  {
-    Attach(Observer)
-    Notify()
+class Context {
+    +add_io_ihm_interface(io_class, ihmelt_class)    
+    +attach_ihm(ihm)
+    +register_io(io)
 }
 
-class IoObserver {
-    update()
-}
+abstract Singleton
 
-class IoSubject  {
-    Attach(Observer)
-    Notify()
-}
+Io <|-- Pin
+Subject <|.. Io
 
-class IhmObserver {
-    update()
-}
+Observer <|.. IhmElement
+IhmElement <|-- IhmEltPin
 
-Interface Event {
-    getEmiter()
-    getParameters()
-}
+Singleton <|-- Context
 
-Interface IhmElement
-Interface IoElement
+Context " n " o-left-> " 0,1 " Ihm
+Context " 1 " o--> " n " Io
+Subject .up.> Notification
 
-Class IhmIoMapper {
-    map(IhmElt, Io)
-}
+IhmBasic " 1 " o--> " n " IhmElement
 
-IhmPublisher ..> IhmElement
-Io o--> IhmElement 
-
-IoFactory <|-- PinInFactory
-IoFactory <|-- PinOutFactory
-
-
-PinInFactory ..> PinIn
-PinOutFactory ..> PinOut
-
-Ihm o--> IhmSubject
-Ihm o--> IoObserver
-
-Io o--> IoSubject
-Io o--> IhmObserver
-
-
-uc *-- Io
-
-Io  <|-- Pin
-Pin <|-- PinOut
-Pin <|-- PinIn
+IhmEltPin " n " *-right-> " 1 " Pin
 
 
 

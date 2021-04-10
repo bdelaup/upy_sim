@@ -43,9 +43,9 @@ class TestObserver(unittest.TestCase):
         obs = ConcretObserver()
         subj.register_observer(obs)        
         subj.set_state(4)
-        assert(obs.state == 4)
+        self.assertEqual(obs.state , 4)
         subj.set_state(5)
-        assert(obs.state == 5)
+        self.assertEqual(obs.state , 5)
 
 if __name__ == "__main__":
     unittest.main() # run all tests

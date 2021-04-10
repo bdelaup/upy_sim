@@ -18,9 +18,9 @@ class TestObserver(unittest.TestCase):
 
     def testNominal(self):
         MyClass()
-        assert(MyClass().cpt == 0)
+        self.assertEqual(MyClass().cpt , 0)
         MyClass().inc()
-        assert(MyClass().cpt == 1)
+        self.assertEqual(MyClass().cpt , 1)
 
 
 if __name__ == "__main__":

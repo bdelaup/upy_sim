@@ -23,3 +23,8 @@ class Notification(ABC):
     def __init__(self, subject_id, subject_state):
         self.subject_id = subject_id
         self.subject_state = subject_state
+
+
+
+    
+
