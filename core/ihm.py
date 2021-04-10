@@ -1,5 +1,8 @@
 from abc import abstractmethod, ABC
 from observer_pattern import Observer, Notification
+import logging
+
+# logging.basicConfig(encoding='utf-8', level=logging.DEBUG)
 
 class Ihm(ABC):
     @abstractmethod
@@ -43,6 +46,6 @@ class IhmEltPin(IhmElement):
         self.refresh()
 
     def refresh(self):
-        print ("pin", self.subject_id , " => ", self.subject_state)
+        logging.debug("pin" + str(self.subject_id) +" => "+str(self.subject_state) )
         return self.subject_state
         

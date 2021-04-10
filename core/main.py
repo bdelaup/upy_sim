@@ -1,4 +1,6 @@
 from configuration import ConfigureForR2
+import logging
+logging.basicConfig(level=logging.DEBUG)
 ConfigureForR2.run()
 
 from machine import Pin

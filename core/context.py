@@ -46,8 +46,8 @@ def IoRegister(cls):
         __doc__ = cls.__doc__
         
         def __init__(self, *args, **kwargs):     
-            super(Io, self).__init__(*args, **kwargs)  
             IoTemplate.__init__(self) 
+            super(Io, self).__init__(*args, **kwargs)  
             Context().register_io(self)
 
     #TODO : may not work with different IO type ()
