@@ -1,0 +1,87 @@
+@startuml
+
+
+hide attributes
+
+class "Microcontroler" as uc
+
+Abstract Io {
+    publish
+}
+
+class Pin
+class PinIn
+class PinOut
+class Ihm
+
+Abstract IoFactory {
+    create() -> Io
+}
+
+
+class PinInFactory {
+    create() -> PinIn
+}
+
+class PinOutFactory {
+    create() -> PinOut
+}
+
+
+
+class IhmSubject  {
+    Attach(Observer)
+    Notify()
+}
+
+class IoObserver {
+    update()
+}
+
+class IoSubject  {
+    Attach(Observer)
+    Notify()
+}
+
+class IhmObserver {
+    update()
+}
+
+Interface Event {
+    getEmiter()
+    getParameters()
+}
+
+Interface IhmElement
+Interface IoElement
+
+Class IhmIoMapper {
+    map(IhmElt, Io)
+}
+
+IhmPublisher ..> IhmElement
+Io o--> IhmElement 
+
+IoFactory <|-- PinInFactory
+IoFactory <|-- PinOutFactory
+
+
+PinInFactory ..> PinIn
+PinOutFactory ..> PinOut
+
+Ihm o--> IhmSubject
+Ihm o--> IoObserver
+
+Io o--> IoSubject
+Io o--> IhmObserver
+
+
+uc *-- Io
+
+Io  <|-- Pin
+Pin <|-- PinOut
+Pin <|-- PinIn
+
+
+
+@enduml
